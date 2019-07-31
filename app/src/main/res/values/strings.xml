@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Easy dating for you</string>
+    <string name="choose_your_gender">Choose your gender!</string>
+    <string name="man_answer">Male</string>
+    <string name="man_answer_main">Male</string>
+    <string name="woman_answer">Female</string>
+    <string name="woman_answer_main">Female</string>
+    <string name="continue_string">Continue</string>
+    <string name="who_are_you_looking_for">Who are you looking for?</string>
+    <string name="login_hint">Login</string>
+    <string name="password_hint">Password</string>
+    <string name="btn_register_string">Register</string>
+    <string name="btn_signin_string">Sign in</string>
+    <string name="btn_text_registerActivity">If you don\'t have an account, sign up</string>
+    <string name="email_hint">Email</string>
+    <string name="sign_in_string">Sig in</string>
+    <string name="fill_right_fields">Fill right fields!</string>
+    <string name="text_success_registration">Yor registration is successful, we sent email for confirmation.</string>
+    <string name="text_sign_in">Yoy are successfully logged in.</string>
+    <string name="empty_text">   </string>
+    <string name="facebook_app_id">553305978528220</string>
+    <string name="fb_login_protocol_scheme">fb553305978528220</string>
+    <string name="less_twenty_five">less than 25</string>
+    <string name="twenty_five_nine">25-29</string>
+    <string name="more_thirty">more than 30</string>
+    <string name="your_age">Your age</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="sign_in">Sign in</string>
+    <string name="create_account">Create account</string>
+    <string name="or_delimeter">or</string>
+</resources>
