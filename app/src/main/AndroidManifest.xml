@@ -39,20 +39,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainPageActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activities.MainPageActivity" />
         <activity
-            android:name=".activities.LookingForActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activities.LookingForActivity" />
         <activity
-            android:name=".activities.RegistrationScreenActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activities.RegistrationScreenActivity" />
         <activity
-            android:name=".activities.SignInScreenActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activities.SignInScreenActivity"/>
         <activity
-            android:name=".activities.ResultScreenActivity"
-            android:screenOrientation="portrait" />
+            android:name=".activities.ResultScreenActivity" />
         <activity
             android:name=".ui.SplashActivity"
             android:launchMode="singleTask"
@@ -65,16 +60,13 @@
         </activity>
         <activity
             android:name=".ui.WebViewActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.ContentActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.DeepLinkWebView"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
