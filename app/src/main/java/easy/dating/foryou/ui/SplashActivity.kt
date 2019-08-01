@@ -74,7 +74,7 @@ class SplashActivity : BaseActivity() {
 
                     if (value == WEB_VIEW) {
                             startActivity(
-                                    Intent(this@SplashActivity, WebViewActivity::class.java)
+                                    Intent(this@SplashActivity, ChromeTabsActivity::class.java)
                                 .putExtra(EXTRA_TASK_URL, taskUrl)
                             )
                         finish()
