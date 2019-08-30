@@ -17,6 +17,7 @@ import com.github.arturogutierrez.BadgesNotSupportedException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.onesignal.OneSignal
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
 import easy.dating.foryou.*
@@ -44,6 +45,11 @@ class SplashActivity : BaseActivity() {
     override fun initUI() {
         webView = web_view
         progressBar = progress_bar
+
+        OneSignal.startInit(this)
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true)
+                .init()
     }
 
 
