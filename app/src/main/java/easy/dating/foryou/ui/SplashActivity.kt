@@ -3,7 +3,9 @@ package easy.dating.foryou.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
@@ -14,6 +16,7 @@ import easy.dating.foryou._core.BaseActivity
 import easy.dating.foryou.activities.MainScreenActivity
 import com.github.arturogutierrez.Badges
 import com.github.arturogutierrez.BadgesNotSupportedException
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -21,8 +24,12 @@ import com.onesignal.OneSignal
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
 import easy.dating.foryou.*
+import easy.dating.foryou.service.mUserIdClient
 import kotlinx.android.synthetic.main.activity_web_view.*
 import me.leolin.shortcutbadger.ShortcutBadger
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 /**
@@ -39,12 +46,24 @@ class SplashActivity : BaseActivity() {
     val REFERRER_DATA = "REFERRER_DATA"
     val badgeCount = 1
 
+    lateinit var prefs: SharedPreferences
+
+    private var client = mUserIdClient().build()
+
+    lateinit var firebaseAnalytic: FirebaseAnalytics
+
     override fun getContentView(): Int = R.layout.activity_web_view
+
+    private fun generateId() = client.generateId()
 
 
     override fun initUI() {
         webView = web_view
         progressBar = progress_bar
+
+        firebaseAnalytic = FirebaseAnalytics.getInstance(this)
+
+        prefs = getSharedPreferences("easy.dating.foryou", Context.MODE_PRIVATE)
 
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
@@ -76,11 +95,35 @@ class SplashActivity : BaseActivity() {
                     // task url for web view or browser
 //                    val taskUrl = dataSnapshot.child(TASK_URL).value as String
                     val value = dataSnapshot.child(SHOW_IN).value as String
-                    val taskUrl = dataSnapshot.child(TASK_URL).value as String
+                    var taskUrl = dataSnapshot.child(TASK_URL).value as String
+
+                    taskUrl = prefs.getString("endurl", taskUrl).toString()
+
+                    if (prefs.getBoolean("firstrun", true)) {
+
+                        generateId().enqueue(object: Callback<String> {
+                            override fun onFailure(call: Call<String>?, t: Throwable?) {
+                                Log.d("UserId", "jopa")
+                            }
+
+                            override fun onResponse(call: Call<String>?, response: Response<String>?) {
+                                if (response?.body() != null) {
+                                    val userIdBundle = Bundle()
+                                    userIdBundle.putString("userId", response.body())
+
+                                    firebaseAnalytic.logEvent("userId", userIdBundle)
+
+                                    prefs.edit().putBoolean("firstrun", false).apply()
+                                }
+                            }
+
+                        })
+
+                    }
 
                     if (value == WEB_VIEW) {
                             startActivity(
-                                    Intent(this@SplashActivity, ChromeTabsActivity::class.java)
+                                    Intent(this@SplashActivity, WebViewActivity::class.java)
                                 .putExtra(EXTRA_TASK_URL, taskUrl)
                             )
                         finish()
