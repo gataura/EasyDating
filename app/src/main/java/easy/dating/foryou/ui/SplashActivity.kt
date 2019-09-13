@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.onesignal.OneSignal
+import com.uxcam.UXCam
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
 import easy.dating.foryou.*
@@ -64,6 +65,8 @@ class SplashActivity : BaseActivity() {
         firebaseAnalytic = FirebaseAnalytics.getInstance(this)
 
         prefs = getSharedPreferences("easy.dating.foryou", Context.MODE_PRIVATE)
+
+        UXCam.startWithKey("pzonkud8fbhz8mi")
 
         OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
