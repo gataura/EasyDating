@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
@@ -18,16 +19,21 @@ import android.view.View
 import android.webkit.*
 import android.widget.ProgressBar
 import androidx.core.app.ActivityCompat
+import com.google.firebase.analytics.FirebaseAnalytics
 import easy.dating.foryou.EXTRA_TASK_URL
 import easy.dating.foryou.R
 import easy.dating.foryou._core.BaseActivity
 import im.delight.android.webview.AdvancedWebView
 import kotlinx.android.synthetic.main.activity_web_view.*
+import org.joda.time.DateTime
+import org.joda.time.Days
+import org.joda.time.Minutes
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.min
 
 
 /**
@@ -43,6 +49,10 @@ class WebViewActivity : BaseActivity(), AdvancedWebView.Listener {
     val PERMISSION_CODE = 1000
     var size: Long = 0
 
+    lateinit var firebaseAnalytic: FirebaseAnalytics
+
+    var minutesToday = 0
+
     lateinit var prefs: SharedPreferences
 
     override fun getContentView(): Int = R.layout.activity_web_view
@@ -50,6 +60,8 @@ class WebViewActivity : BaseActivity(), AdvancedWebView.Listener {
     override fun initUI() {
         webView = web_view
         progressBar = progress_bar
+
+        firebaseAnalytic = FirebaseAnalytics.getInstance(this)
 
         prefs = getSharedPreferences("easy.dating.foryou", Context.MODE_PRIVATE)
     }
@@ -266,8 +278,156 @@ class WebViewActivity : BaseActivity(), AdvancedWebView.Listener {
     ) {
     }
 
+    fun makeEvent(startTime: DateTime) {
+        minutesToday += Minutes.minutesBetween(startTime, DateTime.now()).minutes
+        //if (prefs.getBoolean("todayfirst", true)) {
+            if (prefs.getString("dateInstall", "") != "") {
+                if (Days.daysBetween(DateTime(prefs.getString("dateInstall", "")), DateTime.now()).days == 0) {
+                   makeFirstDay(minutesToday)
+                } else if (Days.daysBetween(DateTime(prefs.getString("dateInstall", "")), DateTime.now()).days == 1) {
+                    makeSecDay(minutesToday)
+                } else if (Days.daysBetween(DateTime(prefs.getString("dateInstall", "")), DateTime.now()).days == 2) {
+                    makeThirdDay(minutesToday)
+                }
+            }
+        //}
+    }
+
+    fun makeThirdDay(minutesToday: Int) {
+        val gtu = prefs.getString("gtu", "")
+        val ltu = prefs.getString("ltu", "")
+        val rr = prefs.getString("rr", "")
+
+        if (minutesToday >= 5){
+            if (gtu != null) {
+                if (gtu.contains("GTU2")) {
+                    if (!prefs.getBoolean("gtuToday", false)) {
+                        prefs.edit().putString("gtu", "GTU3").apply()
+                        val gtuOneBundle = Bundle()
+                        gtuOneBundle.putString("GTU3", "GTU3")
+
+                        firebaseAnalytic.logEvent("GTU3", gtuOneBundle)
+                        prefs.edit().putBoolean("gtuToday", true).apply()
+                    }
+                }
+            }
+            if (ltu != null) {
+                if (ltu.contains("LTU2")) {
+                    if (!prefs.getBoolean("ltuToday", false)) {
+                        prefs.edit().putString("ltu", "LTU3").apply()
+                        val gtuOneBundle = Bundle()
+                        gtuOneBundle.putString("LTU3", "LTU3")
+
+                        firebaseAnalytic.logEvent("LTU3", gtuOneBundle)
+                        prefs.edit().putBoolean("ltuToday", true).apply()
+                    }
+                }
+            }
+        } else if (minutesToday >= 1) {
+            if (gtu != null) {
+                if (gtu.contains("GTU2")) {
+                    if (!prefs.getBoolean("gtuToday", false)) {
+                        prefs.edit().putString("gtu", "GTU3").apply()
+                        val gtuOneBundle = Bundle()
+                        gtuOneBundle.putString("GTU3", "GTU3")
+
+                        firebaseAnalytic.logEvent("GTU3", gtuOneBundle)
+                        prefs.edit().putBoolean("gtuToday", true).apply()
+                    }
+                }
+            }
+        }
+    }
+
+    fun makeSecDay(minutesToday: Int) {
+        val gtu = prefs.getString("gtu", "")
+        val ltu = prefs.getString("ltu", "")
+        val rr = prefs.getString("rr", "")
+        if (minutesToday >= 5){
+            if (gtu != null) {
+                if (gtu.contains("GTU1")) {
+                    if (!prefs.getBoolean("gtuToday", false)) {
+                        prefs.edit().putString("gtu", "GTU2").apply()
+                        val gtuOneBundle = Bundle()
+                        gtuOneBundle.putString("GTU2", "GTU2")
+
+                        firebaseAnalytic.logEvent("GTU2", gtuOneBundle)
+                        prefs.edit().putBoolean("gtuToday", true).apply()
+                    }
+                }
+            }
+            if (ltu != null) {
+                if (ltu.contains("LTU1")) {
+                    if (!prefs.getBoolean("ltuToday", false)) {
+                        prefs.edit().putString("ltu", "LTU2").apply()
+                        val gtuOneBundle = Bundle()
+                        gtuOneBundle.putString("LTU2", "LTU2")
+
+                        firebaseAnalytic.logEvent("LTU2", gtuOneBundle)
+                        prefs.edit().putBoolean("ltuToday", true).apply()
+                    }
+                }
+            }
+        } else if (minutesToday >= 1) {
+            if (gtu != null) {
+                if (gtu.contains("GTU1")) {
+                    if (!prefs.getBoolean("gtuToday", false)) {
+                        prefs.edit().putString("gtu", "GTU2").apply()
+                        val gtuOneBundle = Bundle()
+                        gtuOneBundle.putString("GTU2", "GTU2")
+
+                        firebaseAnalytic.logEvent("GTU2", gtuOneBundle)
+                        prefs.edit().putBoolean("gtuToday", true).apply()
+                    }
+                }
+            }
+        }
+    }
+
+    fun makeFirstDay(minutesToday: Int) {
+        if (minutesToday >= 5){
+
+            if (!prefs.getBoolean("gtuToday", false)) {
+                prefs.edit().putString("gtu", "GTU1").apply()
+                val gtuOneBundle = Bundle()
+                gtuOneBundle.putString("GTU1", "GTU1")
+
+                firebaseAnalytic.logEvent("GTU1", gtuOneBundle)
+                prefs.edit().putBoolean("gtuToday", true).apply()
+            }
+            if (!prefs.getBoolean("ltuToday", false)) {
+                prefs.edit().putString("ltu", "LTU1").apply()
+                val gtuOneBundle = Bundle()
+                gtuOneBundle.putString("LTU1", "LTU1")
+
+                firebaseAnalytic.logEvent("LTU1", gtuOneBundle)
+                prefs.edit().putBoolean("ltuToday", true).apply()
+            }
+        } else if (minutesToday >= 1) {
+            if (!prefs.getBoolean("gtuToday", false)) {
+                prefs.edit().putString("gtu", "GTU1").apply()
+                val gtuOneBundle = Bundle()
+                gtuOneBundle.putString("GTU1", "GTU1")
+
+                firebaseAnalytic.logEvent("GTU1", gtuOneBundle)
+                prefs.edit().putBoolean("gtuToday", true).apply()
+            }
+        }
+    }
+
     override fun onStop() {
         super.onStop()
+
+        minutesToday = prefs.getString("minutesToday", "0")!!.toInt()
+
+
+        if (prefs.getString("sessionTime", "") != "") {
+            val startTime = DateTime(prefs.getString("sessionTime", ""))
+            makeEvent(startTime)
+        }
+
+
+        prefs.edit().putString("minutesToday", minutesToday.toString()).apply()
 
         prefs.edit().putString("endurl", webView.url).apply()
 

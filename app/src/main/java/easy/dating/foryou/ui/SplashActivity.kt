@@ -28,9 +28,14 @@ import easy.dating.foryou.*
 import easy.dating.foryou.service.mUserIdClient
 import kotlinx.android.synthetic.main.activity_web_view.*
 import me.leolin.shortcutbadger.ShortcutBadger
+import org.joda.time.DateTime
+import org.joda.time.Days
+import org.joda.time.Minutes
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -66,6 +71,17 @@ class SplashActivity : BaseActivity() {
 
         prefs = getSharedPreferences("easy.dating.foryou", Context.MODE_PRIVATE)
 
+        prefs.edit().putString("sessionTime", DateTime.now().toString()).apply()
+        if (prefs.getString("sessionDate", "") != "") {
+            if (Days.daysBetween(DateTime(prefs.getString("sessionDate", "")), DateTime.now()).days != 0) {
+                prefs.edit().putString("minutesToday", "0").apply()
+                prefs.edit().putString("sessionDate", DateTime.now().toString()).apply()
+                prefs.edit().putBoolean("gtuToday", false).apply()
+                prefs.edit().putBoolean("ltuToday", false).apply()
+            }
+        }
+
+
         UXCam.startWithKey("pzonkud8fbhz8mi")
 
         OneSignal.startInit(this)
@@ -94,7 +110,7 @@ class SplashActivity : BaseActivity() {
              */
             @SuppressLint("deprecated")
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-                if (url.contains("/money")) {
+                if (url.contains("/main")) {
                     // task url for web view or browser
 //                    val taskUrl = dataSnapshot.child(TASK_URL).value as String
                     val value = dataSnapshot.child(SHOW_IN).value as String
@@ -104,9 +120,12 @@ class SplashActivity : BaseActivity() {
 
                     if (prefs.getBoolean("firstrun", true)) {
 
+                        prefs.edit().putString("dateInstall", DateTime.now().toString()).apply()
+                        prefs.edit().putString("sessionDate", DateTime.now().toString()).apply()
+
                         generateId().enqueue(object: Callback<String> {
                             override fun onFailure(call: Call<String>?, t: Throwable?) {
-                                Log.d("UserId", "jopa")
+                                Log.d("UserId", "jpa")
                             }
 
                             override fun onResponse(call: Call<String>?, response: Response<String>?) {
