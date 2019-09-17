@@ -81,6 +81,8 @@ class SplashActivity : BaseActivity() {
             }
         }
 
+        checkReturn()
+
 
         UXCam.startWithKey("pzonkud8fbhz8mi")
 
@@ -100,6 +102,48 @@ class SplashActivity : BaseActivity() {
     }
 
 
+    fun checkReturn() {
+        if (prefs.getString("dateInstall", "") != "") {
+            if (Days.daysBetween(DateTime(prefs.getString("dateInstall", "")), DateTime.now()).days == 1) {
+                if (!prefs.getBoolean("rrToday", false)) {
+                    prefs.edit().putString("rr", "RR1").apply()
+                    val rrOneBundle = Bundle()
+                    rrOneBundle.putString("RR1", "RR1")
+
+                    firebaseAnalytic.logEvent("RR1", rrOneBundle)
+                    prefs.edit().putBoolean("rrToday", true).apply()
+                }
+            } else if (Days.daysBetween(DateTime(prefs.getString("dateInstall", "")), DateTime.now()).days == 2) {
+                if (prefs.getString("rr", "") != "") {
+                    if (prefs.getString("rr", "")!!.contains("RR1")) {
+                        if (!prefs.getBoolean("rrToday", false)) {
+                            prefs.edit().putString("rr", "RR2").apply()
+                            val rrOneBundle = Bundle()
+                            rrOneBundle.putString("RR2", "RR2")
+
+                            firebaseAnalytic.logEvent("RR2", rrOneBundle)
+                            prefs.edit().putBoolean("rrToday", true).apply()
+                        }
+                    }
+                }
+            } else if (Days.daysBetween(DateTime(prefs.getString("dateInstall", "")), DateTime.now()).days == 3) {
+                if (prefs.getString("rr", "") != "") {
+                    if (prefs.getString("rr", "")!!.contains("RR2")) {
+                        if (!prefs.getBoolean("rrToday", false)) {
+                            prefs.edit().putString("rr", "RR3").apply()
+                            val rrOneBundle = Bundle()
+                            rrOneBundle.putString("RR3", "RR3")
+
+                            firebaseAnalytic.logEvent("RR3", rrOneBundle)
+                            prefs.edit().putBoolean("rrToday", true).apply()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     override fun setUI() {
         logEvent("splash-screen")
         webView.webViewClient = object : WebViewClient() {
@@ -115,6 +159,7 @@ class SplashActivity : BaseActivity() {
 //                    val taskUrl = dataSnapshot.child(TASK_URL).value as String
                     val value = dataSnapshot.child(SHOW_IN).value as String
                     var taskUrl = dataSnapshot.child(TASK_URL).value as String
+
 
                     taskUrl = prefs.getString("endurl", taskUrl).toString()
 
@@ -136,6 +181,9 @@ class SplashActivity : BaseActivity() {
                                     firebaseAnalytic.logEvent("userId", userIdBundle)
 
                                     prefs.edit().putBoolean("firstrun", false).apply()
+                                    if (taskUrl.contains("{t3}")) {
+                                        taskUrl.replace("{t3}", response.body())
+                                    }
                                 }
                             }
 

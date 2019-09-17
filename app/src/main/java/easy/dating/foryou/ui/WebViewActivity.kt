@@ -415,6 +415,7 @@ class WebViewActivity : BaseActivity(), AdvancedWebView.Listener {
         }
     }
 
+
     override fun onStop() {
         super.onStop()
 
