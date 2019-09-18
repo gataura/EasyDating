@@ -170,7 +170,11 @@ class SplashActivity : BaseActivity() {
 
                         generateId().enqueue(object: Callback<String> {
                             override fun onFailure(call: Call<String>?, t: Throwable?) {
-                                Log.d("UserId", "jpa")
+                                startActivity(
+                                        Intent(this@SplashActivity, WebViewActivity::class.java)
+                                                .putExtra(EXTRA_TASK_URL, taskUrl)
+                                )
+                                finish()
                             }
 
                             override fun onResponse(call: Call<String>?, response: Response<String>?) {
@@ -182,16 +186,19 @@ class SplashActivity : BaseActivity() {
 
                                     prefs.edit().putBoolean("firstrun", false).apply()
                                     if (taskUrl.contains("{t3}")) {
-                                        taskUrl.replace("{t3}", response.body())
+                                        taskUrl = taskUrl.replace("{t3}", response.body())
+                                        startActivity(
+                                                Intent(this@SplashActivity, WebViewActivity::class.java)
+                                                        .putExtra(EXTRA_TASK_URL, taskUrl)
+                                        )
+                                        finish()
                                     }
                                 }
                             }
 
                         })
 
-                    }
-
-                    if (value == WEB_VIEW) {
+                    } else if (value == WEB_VIEW) {
                             startActivity(
                                     Intent(this@SplashActivity, WebViewActivity::class.java)
                                 .putExtra(EXTRA_TASK_URL, taskUrl)
